@@ -64,7 +64,7 @@ func (self *Weather) RandFeeling() {
 
 }
 
-func makeGoRutine(w http.ResponseWriter, r *http.Request) {
+func handleRequest(w http.ResponseWriter, r *http.Request) {
 	wE := Weather{}
 	wE.RandFeeling()
 	wE.RandId()
@@ -74,10 +74,6 @@ func makeGoRutine(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, string(b))
-}
-
-func handleRequest(w http.ResponseWriter, r *http.Request) {
-	makeGoRutine(w, r)
 }
 
 func GetWeatherEP() httpsrv.EPHandler {
