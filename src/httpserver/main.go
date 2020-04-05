@@ -10,6 +10,8 @@ const (
 	LISTEN_PORT = 8080
 )
 
+var jobs chan int
+
 func main() {
 
 	h1 := handlers.GetWeatherEP()

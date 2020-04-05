@@ -29,6 +29,7 @@ func (h HTTPServer) AddHandler() {
 	for i := 0; i < len(h.Handlers); i++ {
 		h := h.Handlers[i]
 		http.HandleFunc(h.URL, h.HandleFunc)
+
 	}
 
 }

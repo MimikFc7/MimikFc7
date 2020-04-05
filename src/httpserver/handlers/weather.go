@@ -1,16 +1,34 @@
 package handlers
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"httpserver/httpsrv"
 	"math/rand"
 	"net/http"
+	"os"
 	"time"
 )
 
-const charset = "abcdefghijklmnopqrstuvwxyz" +
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const charset = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+var charslist = []string{}
+
+func readLines(path string) []string {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines
+}
 
 type Weather struct {
 	Id      int    `json:"id"`
@@ -37,11 +55,16 @@ func (self *Weather) RandId() {
 }
 
 func (self *Weather) RandFeeling() {
-	self.Feeling = String(10)
+
+	if charslist != nil && len(charslist) > 0 {
+		self.Feeling = charslist[rand.Intn(len(charslist)-0)+0]
+	} else {
+		self.Feeling = String(10)
+	}
+
 }
 
-func handleRequest(w http.ResponseWriter, r *http.Request) {
-
+func makeGoRutine(w http.ResponseWriter, r *http.Request) {
 	wE := Weather{}
 	wE.RandFeeling()
 	wE.RandId()
@@ -53,7 +76,16 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(b))
 }
 
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+	makeGoRutine(w, r)
+}
+
 func GetWeatherEP() httpsrv.EPHandler {
+
+	charslist = readLines("handlers/word_rus.txt")
+	fmt.Println(charslist[0])
+	fmt.Println(len(charslist))
+
 	h1 := httpsrv.EPHandler{
 		URL:        "/weather",
 		HandleFunc: handleRequest,
