@@ -57,7 +57,7 @@ func (self *Weather) RandId() {
 func (self *Weather) RandFeeling() {
 
 	if charslist != nil && len(charslist) > 0 {
-		self.Feeling = charslist[rand.Intn(len(charslist)-0)+0]
+		self.Feeling = charslist[rand.Intn(len(charslist)-1)+0]
 	} else {
 		self.Feeling = String(10)
 	}
@@ -79,7 +79,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 func GetWeatherEP() httpsrv.EPHandler {
 
 	charslist = readLines("handlers/word_rus.txt")
-	fmt.Println(charslist[0])
+	fmt.Println(charslist[len(charslist)-1])
 	fmt.Println(len(charslist))
 
 	h1 := httpsrv.EPHandler{
